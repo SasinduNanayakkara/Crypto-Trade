@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react'
 import { formatNumbers, checkPrice } from '../components/CryptoList';
 import Layout from "../components/Layout";
@@ -60,7 +61,16 @@ export const Coin = ({coin}) => {
                             </li>
                         </ul>
                     </div>
-                    <div></div>
+                    <div className='--card --bg-primary'>
+                        <div className='--flex-start'>
+                        <Image src={icon} alt={name} width="50" height="50"/>
+                        &nbsp;&nbsp;
+                        <span>
+                            <p className='--text-light'>{symbol}</p>
+                            <h2 className='--text-light'>{name}</h2>
+                        </span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>

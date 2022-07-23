@@ -5,7 +5,6 @@ import Layout from '../components/Layout'
 import styles from '../styles/Home.module.css'
 
 export default function Home({coins}) {
-  console.log(coins);
   return (
     <div>
       <Head>
@@ -25,7 +24,7 @@ export default function Home({coins}) {
 }
 
 export const getStaticProps = async () => {
-  const res = await fetch("https://api.coinstats.app/public/v1/coins?skip=0&limit=10");
+  const res = await fetch("https://api.coinstats.app/public/v1/coins?skip=0&limit=20");
   const data = await res.json();
 
   return {

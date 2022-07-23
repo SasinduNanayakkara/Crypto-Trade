@@ -1,7 +1,9 @@
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react'
 import styles from "../styles/CryptoList.module.scss";
+import Search from './Search';
+import ReactPaginate from 'react-paginate';
 
 export const formatNumbers = (num) => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -17,10 +19,41 @@ export const checkPrice = (price) => {
   }
 }
 const CryptoList = ({coins}) => {
+  const [search, setSearch] = useState("");
+  const [filtered, setFiltered] = useState([]);
+  //pagination
+  const [currentItems, setCurrentItems] = useState([]);
+  const [pageCount, setPageCount] = useState(0);
+  const [itemOffset, setItemOffset] = useState(0);
+  const itemsPerPage = 10;
+  
+    useEffect(() => {
+      const endOffset = itemOffset + itemsPerPage;
+      setCurrentItems(filtered.slice(itemOffset, endOffset));
+      setPageCount(Math.ceil(filtered.length / itemsPerPage));
+    }, [itemOffset, itemsPerPage, filtered]);
+  
+    const handlePageClick = (event) => {
+      const newOffset = (event.selected * itemsPerPage) % filtered.length;  
+      setItemOffset(newOffset);
+    };
+
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+    console.log();
+  };
+
+  useEffect(() => {
+    setFiltered(
+      coins.filter((coin) => coin.name.toLowerCase().includes(search.toLowerCase()))
+    )
+  }, [search, coins]);
+
   return (
     <section className='coin-list'>
       <div className="container">
         <div className={styles.table}>
+          <Search value={search} onChange={handleSearch}/>
           <table>
             <thead>
             <tr>
@@ -32,7 +65,7 @@ const CryptoList = ({coins}) => {
             </tr>
             </thead>
             <tbody>
-              {coins.map((coin, index) => {
+              {currentItems.map((coin, index) => {
                 const {
                   id, 
                   name,
@@ -60,9 +93,23 @@ const CryptoList = ({coins}) => {
             </tbody>
           </table>
         </div>
+        <ReactPaginate
+        breakLabel="..."
+        nextLabel="Next"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={5}
+        pageCount={pageCount}
+        previousLabel="Prev"
+        renderOnZeroPageCount={null}
+        containerClassName="pagination"
+        pageLinkClassName="page-num"
+        previousLinkClassName="page-num"
+        nextLinkClassName="page-num"
+        activeClassName="active"
+      />
       </div>
     </section>
   )
 }
 
-export default CryptoList
+export default CryptoList;
